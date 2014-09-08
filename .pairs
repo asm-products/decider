@@ -1,0 +1,10 @@
+# .pairs - configuration for 'git pair'
+pairs:
+  # <initials>: <Firstname> <Lastname>[; <email-id>]
+  eh: Erik Hanson; erik
+  erik: Erik Hanson; erik
+  nt: Noah Thorp; noah
+  noah: Noah Thorp; noah
+email:
+  prefix: pair
+  domain: citizencode.io
