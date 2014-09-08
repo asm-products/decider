@@ -7,7 +7,7 @@ RSpec.describe 'proposing', type: :feature do
     fill_in 'proposal[description]', with: 'more spells'
     click_button 'Create Proposal'
 
-    expect(current_path).to eq '/proposals'
+    expect(current_path).to eq '/'
     within('.proposals') do
       expect(page).to have_content('J.K. Rowling')
       expect(page).to have_content('more spells')

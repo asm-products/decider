@@ -5,7 +5,7 @@ class ProposalsController < ApplicationController
 
   def create
     ProposalFlow.new.create_proposal(params[:proposal].permit(:proposer, :description).symbolize_keys)
-    redirect_to proposals_path
+    redirect_to root_path
   end
 
   def index
