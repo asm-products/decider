@@ -2,7 +2,8 @@ class Views::Proposals::Index < Views::Base
   needs :proposals
 
   def content
-    p 'hi there'
+    p(link_to 'New Proposal', new_proposal_path)
+
     table(class: :proposals) do
       tr do
         th 'Proposer'
