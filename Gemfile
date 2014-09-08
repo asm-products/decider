@@ -1,9 +1,11 @@
 source 'https://rubygems.org'
 
+gem 'capybara', group: [:development, :test]
 gem 'coffee-rails', '~> 4.0.0'
 gem 'fortitude'
-gem 'pivotal_git_scripts', group: :development
 gem 'jquery-rails'
+gem 'launchy', group: [:development, :test]
+gem 'pivotal_git_scripts', group: :development
 gem 'pg'
 gem 'rails', '4.1.5'
 gem 'rspec-rails', group: [:development, :test]
