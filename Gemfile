@@ -12,6 +12,7 @@ gem 'pivotal_git_scripts', group: :development
 gem 'pg'
 gem 'postmark-rails'
 gem 'rails', '4.1.5'
+gem 'rails_12factor', group: :production
 gem 'rspec-rails', group: [:development, :test]
 gem 'sass-rails', '~> 4.0.3'
 gem 'spring', group: :development
