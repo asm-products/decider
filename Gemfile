@@ -10,6 +10,7 @@ gem 'jquery-rails'
 gem 'launchy', group: [:development, :test]
 gem 'pivotal_git_scripts', group: :development
 gem 'pg'
+gem 'postmark-rails'
 gem 'rails', '4.1.5'
 gem 'rspec-rails', group: [:development, :test]
 gem 'sass-rails', '~> 4.0.3'
