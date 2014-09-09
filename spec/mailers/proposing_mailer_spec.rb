@@ -18,8 +18,6 @@ RSpec.describe ProposingMailer, type: :mailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to match("new elf world")
-      expect(mail.body.encoded).to match("object")
-      expect(mail.body.encoded).to match("don't object")
     end
   end
 end
