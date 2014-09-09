@@ -18,5 +18,9 @@ RSpec.describe 'proposing', type: :feature do
       expect(page).to have_content('oscard@example.com')
       expect(page).to have_content('lalexander@example.com')
     end
+
+    mail_sample = ActionMailer::Base.deliveries.first
+
+    expect(mail_sample.to).to include( 'dadams@example.com' )
   end
 end

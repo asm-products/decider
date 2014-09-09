@@ -1,10 +1,12 @@
 class ProposalFlow
   def create_proposal(description:, proposer:, proposer_email:, stakeholder_emails:)
     proposal = Proposal.create!(description: description, proposer: proposer)
-
-    (parse_emails(stakeholder_emails) << proposer_email).each do |email|
+    stakeholder_emails = parse_emails(stakeholder_emails) << proposer_email
+    (stakeholder_emails).each do |email|
       proposal.stakeholders.create!(email: email)
     end
+
+    ProposingMailer.propose(recipients: stakeholder_emails, subject: '', proposal: '').deliver
   end
 
   def proposals

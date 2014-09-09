@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe ProposingMailer, type: :mailer do
   describe "proposal" do
     let(:mail) do
-      ProposingMailer.proposal(
+      ProposingMailer.propose(
         subject: "New proposal from J.R.R. Tolkein",
         recipients: %w[dadams@example.com oscard@example.com lalexander@example.com],
         proposal: "new elf world"

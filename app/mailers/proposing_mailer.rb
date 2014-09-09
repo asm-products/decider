@@ -1,7 +1,7 @@
 class ProposingMailer < ActionMailer::Base
   default from: "decider@citizencode.io"
 
-  def proposal(subject:, recipients:, proposal:)
+  def propose(subject:, recipients:, proposal:)
     @proposal = proposal
     @subject = subject
 
