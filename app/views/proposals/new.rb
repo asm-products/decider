@@ -13,6 +13,11 @@ class Views::Proposals::New < Views::Base
         textarea(id: 'description', name: 'proposal[description]')
       end
 
+      p do
+        label('Stakeholders (email addresses separated by spaces)', for: 'stakeholder_emails')
+        textarea(id: 'stakeholder_emails', name: 'proposal[stakeholder_emails]')
+      end
+
       input(type: :submit, value: 'Create Proposal')
     end
   end

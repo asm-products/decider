@@ -5,12 +5,16 @@ RSpec.describe 'proposing', type: :feature do
     visit '/proposals/new'
     fill_in 'proposal[proposer]', with: 'J.K. Rowling'
     fill_in 'proposal[description]', with: 'more spells'
+    fill_in 'proposal[stakeholder_emails]', with: 'dadams@example.com oscard@example.com lalexander@example.com'
     click_button 'Create Proposal'
 
     expect(current_path).to eq '/'
     within('.proposals') do
       expect(page).to have_content('J.K. Rowling')
       expect(page).to have_content('more spells')
+      expect(page).to have_content('dadams@example.com')
+      expect(page).to have_content('oscard@example.com')
+      expect(page).to have_content('lalexander@example.com')
     end
   end
 end

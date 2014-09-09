@@ -1,10 +1,27 @@
 class ProposalFlow
-  def create_proposal(description:, proposer:)
-    Proposal.create!(description: description, proposer: proposer)
+  def create_proposal(description:, proposer:, stakeholder_emails:)
+    proposal = Proposal.create!(description: description, proposer: proposer)
+
+    parse_emails(stakeholder_emails).each do |email|
+      proposal.stakeholders.create!(email: email)
+    end
   end
 
   def proposals
-    Proposal.all.map {|x| x.attributes.slice('description', 'proposer').symbolize_keys }
+    Proposal.all.map do |proposal|
+      {
+        description: proposal.description,
+        proposer: proposal.proposer,
+        stakeholder_emails: proposal.stakeholders.map(&:email).sort
+      }
+    end
+  end
+
+  private
+
+  def parse_emails(email_string)
+    email_string.strip!
+    email_string.split /[\s,]+/
   end
 end
 
