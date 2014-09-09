@@ -21,6 +21,8 @@ RSpec.describe 'proposing', type: :feature do
 
     mail_sample = ActionMailer::Base.deliveries.first
 
-    expect(mail_sample.to).to include( 'dadams@example.com' )
+    expect(mail_sample.to).to include('dadams@example.com')
+    expect(mail_sample.subject).to include('J.K. Rowling')
+    expect(mail_sample.body).to include('more spells')
   end
 end
