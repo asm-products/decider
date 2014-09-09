@@ -4,8 +4,13 @@ class Views::Proposals::New < Views::Base
   def content
     form_for(:proposal, url: proposals_path, method: :post) do
       p do
-        label('Proposer', for: 'proposer')
+        label('Your Name', for: 'proposer')
         input(type: :text, id: 'proposer', name: 'proposal[proposer]')
+      end
+
+      p do
+        label('Your Email', for: 'proposer_email')
+        input(type: :text, id: 'proposer_email', name: 'proposal[proposer_email]')
       end
 
       p do

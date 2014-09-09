@@ -2,13 +2,22 @@ require "rails_helper"
 
 describe ProposalFlow do
   describe '#create_proposal' do
-    let(:new_proposal_attributes) { { proposer: 'J.R.R. Tolkein', description: 'new elf world', stakeholder_emails: 'dadams@example.com oscard@example.com lalexander@example.com' } }
+    let(:new_proposal_attributes) do
+      { proposer: 'J.R.R. Tolkein',
+        proposer_email: 'jrr@example.com',
+        description: 'new elf world',
+        stakeholder_emails: 'dadams@example.com oscard@example.com lalexander@example.com' }
+    end
+
     let(:flow) { ProposalFlow.new }
 
     before { flow.create_proposal(new_proposal_attributes) }
 
     specify { expect(Proposal.pluck(:proposer, :description).last).to eq ['J.R.R. Tolkein', 'new elf world'] }
-    specify { expect(Proposal.last.stakeholders.pluck(:email)).to match_array %w[dadams@example.com oscard@example.com lalexander@example.com] }
+    specify do
+      expect(Proposal.last.stakeholders.pluck(:email)).
+      to match_array %w[dadams@example.com jrr@example.com oscard@example.com lalexander@example.com]
+    end
   end
 
   describe '#proposals' do
