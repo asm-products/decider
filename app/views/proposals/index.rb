@@ -7,7 +7,7 @@ class Views::Proposals::Index < Views::Base
     table(class: :proposals) do
       tr do
         th 'Proposer'
-        th 'Description'
+        th 'Proposal'
       end
 
       proposals.each do |proposal|
