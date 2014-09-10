@@ -1,9 +1,10 @@
 class ProposingMailerPreview < ActionMailer::Preview
   def propose
     ProposingMailer.propose(
-        subject: '[Proposal from x] from xyz',
-        recipients: %w|x@example.com y@example.com|,
-        proposal: 'my proposal'
+        subject: 'Proposal from fred',
+        recipient: 'x@example.com',
+        proposal: 'my proposal',
+        reply_id: 123
       )
   end
 end

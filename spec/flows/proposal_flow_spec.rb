@@ -9,7 +9,7 @@ describe ProposalFlow do
   describe '#create_proposal' do
     let(:flow) { ProposalFlow.new }
     let(:last_proposal) { Proposal.last }
-    let(:last_email) { ActionMailer::Base.deliveries.last }
+    let(:emails) { ActionMailer::Base.deliveries }
 
     before do
       flow.create_proposal(
@@ -26,10 +26,32 @@ describe ProposalFlow do
       specify { expect(last_proposal.stakeholders.pluck(:email)).to match_array [tolkein, martin, rowling, gaiman] }
     end
 
+    describe 'creating replies' do
+      specify { expect(last_proposal.replies.map(&:stakeholder).map(&:email)).to match_array [tolkein, martin, rowling, gaiman] }
+      specify { expect(last_proposal.replies.map(&:value)).to match_array [nil, nil, nil, nil] }
+    end
+
     describe 'sending email' do
-      specify { expect(last_email.subject).to eq 'New proposal from J.R.R. Tolkein' }
-      specify { expect(last_email.to).to match_array [tolkein, martin, rowling, gaiman] }
-      specify { expect(last_email.body).to match 'new elf world' }
+      specify { expect(emails.map(&:subject).uniq).to eq ['New proposal from J.R.R. Tolkein'] }
+      specify { expect(emails.map(&:to).flatten).to match_array [tolkein, martin, rowling, gaiman] }
+      specify { expect(emails[0].body).to match 'new elf world' }
+    end
+  end
+
+  describe '#add_stakeholder' do
+    let(:flow) { ProposalFlow.new }
+    let(:proposal) { Proposal.create! description: 'new elf world', proposer: 'J.R.R. Tolkein'}
+
+    specify do
+      allow(ProposingMailer).to receive(:propose).and_call_original
+
+      flow.add_stakeholder(martin, proposal)
+      expect(ProposingMailer).to have_received(:propose).with(
+            recipient: martin,
+            subject: 'New proposal from J.R.R. Tolkein',
+            proposal: 'new elf world',
+            reply_id: Reply.last.id
+          )
     end
   end
 

@@ -1,16 +1,21 @@
 class ProposalFlow
   def create_proposal(description:, proposer:, proposer_email:, stakeholder_emails:)
     proposal = Proposal.create!(description: description, proposer: proposer)
-    stakeholder_emails = parse_emails(stakeholder_emails, proposer_email)
 
-    stakeholder_emails.each do |email|
-      proposal.stakeholders.create!(email: email)
+    parse_emails(stakeholder_emails, proposer_email).each do |email|
+      add_stakeholder(email, proposal)
     end
+  end
+
+  def add_stakeholder(stakeholder_email, proposal)
+    stakeholder = proposal.stakeholders.create!(email: stakeholder_email)
+    reply = proposal.replies.create!(stakeholder_id: stakeholder.id)
 
     ProposingMailer.propose(
-      recipients: stakeholder_emails,
-      subject: "New proposal from #{proposer}",
-      proposal: description
+      recipient: stakeholder_email,
+      subject: "New proposal from #{proposal.proposer}",
+      proposal: proposal.description,
+      reply_id: reply.id
     ).deliver
   end
 
