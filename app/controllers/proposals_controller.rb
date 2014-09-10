@@ -15,4 +15,8 @@ class ProposalsController < ApplicationController
   def index
     @proposals = ProposalFlow.new.proposals
   end
+
+  def show
+    @proposal = Proposal.find(params[:id])
+  end
 end

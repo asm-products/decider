@@ -4,18 +4,13 @@ class Views::Proposals::Index < Views::Base
   def content
     p(link_to 'New Proposal', new_proposal_path)
 
-    table(class: :proposals) do
-      tr do
-        th 'Proposer'
-        th 'Proposal'
-        th 'Stakeholders'
-      end
+    h2 'Proposals'
 
+    div(class: :proposals) do
       proposals.each do |proposal|
-        tr do
-          td proposal[:proposer]
-          td proposal[:description]
-          td proposal[:stakeholder_emails].join(', ')
+        p do
+          text "#{proposal[:proposer]} proposed "
+          text link_to(proposal[:description], proposal_path(id: proposal[:id]))
         end
       end
     end

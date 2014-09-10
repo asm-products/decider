@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe RepliesController do
-  let(:reply) { Reply.create }
+  let(:reply) { create(:reply) }
 
   def do_get(value: 'true')
     get :show, id: reply.to_param, value: value
@@ -17,6 +17,6 @@ describe RepliesController do
 
   specify do
     do_get
-    expect(response).to redirect_to(root_path)
+    expect(response).to redirect_to(proposal_path(reply.proposal.id))
   end
 end

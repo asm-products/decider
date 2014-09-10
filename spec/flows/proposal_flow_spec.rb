@@ -73,8 +73,16 @@ describe ProposalFlow do
       end
     end
 
+    let(:proposals) { ProposalFlow.new.proposals }
+
+    specify { expect(proposals.size).to eq(2) }
+
+    specify { expect(proposals.first[:id]).to match(/\d+/) }
+
     specify do
-      expect(ProposalFlow.new.proposals).to match_array([
+      proposals_without_id = proposals.each {|x| x.delete(:id) }
+
+      expect(proposals_without_id).to match_array([
         { proposer: 'J.K. Rowling', description: 'more spells', stakeholder_emails: [martin, rowling] },
         { proposer: 'J.R.R. Tolkein', description: 'new elf world', stakeholder_emails: [gaiman] }
       ])

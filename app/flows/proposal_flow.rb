@@ -5,6 +5,8 @@ class ProposalFlow
     parse_emails(stakeholder_emails, proposer_email).each do |email|
       add_stakeholder(email, proposal)
     end
+
+    proposal
   end
 
   def add_stakeholder(stakeholder_email, proposal)
@@ -22,6 +24,7 @@ class ProposalFlow
   def proposals
     Proposal.all.map do |proposal|
       {
+        id: proposal.to_param,
         description: proposal.description,
         proposer: proposal.proposer,
         stakeholder_emails: proposal.stakeholders.map(&:email).sort

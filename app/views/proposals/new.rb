@@ -17,6 +17,8 @@ class Views::Proposals::New < Views::Base
 
       p 'Example: "I propose we use Citizen Decider to make quick decisions"'
 
+      p 'I propose:'
+
       p { textarea(id: 'description', name: 'proposal[description]') }
 
       h2 { label('Stakeholders', for: 'stakeholder_emails') }

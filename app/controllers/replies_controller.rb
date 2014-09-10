@@ -1,6 +1,7 @@
 class RepliesController < ApplicationController
   def show
-    Reply.find(params[:id]).update(value: params[:value])
-    redirect_to root_path
+    reply = Reply.find(params[:id])
+    reply.update(value: params[:value])
+    redirect_to proposal_path(reply.proposal)
   end
 end
