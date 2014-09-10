@@ -1,6 +1,4 @@
 class Views::Proposals::New < Views::Base
-  needs :proposal
-
   def content
     form_for(:proposal, url: proposals_path, method: :post) do
       p do

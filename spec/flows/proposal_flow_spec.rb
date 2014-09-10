@@ -6,13 +6,12 @@ describe ProposalFlow do
   let(:rowling) { 'jk.rowling@example.com' }
   let(:gaiman) { 'n.gaiman@example.com' }
 
-  describe '#create_proposal' do
-    let(:flow) { ProposalFlow.new }
+  describe '.for_new_proposal' do
     let(:last_proposal) { Proposal.last }
     let(:emails) { ActionMailer::Base.deliveries }
 
     before do
-      flow.create_proposal(
+      ProposalFlow.for_new_proposal(
         proposer: 'J.R.R. Tolkein',
         proposer_email: tolkein,
         description: 'new elf world',
@@ -43,13 +42,13 @@ describe ProposalFlow do
   end
 
   describe '#add_stakeholder' do
-    let(:flow) { ProposalFlow.new }
+    let(:flow) { ProposalFlow.new(proposal) }
     let(:proposal) { Proposal.create! description: 'new elf world', proposer: 'J.R.R. Tolkein'}
 
     specify do
       allow(ProposingMailer).to receive(:propose).and_call_original
 
-      flow.add_stakeholder(martin, proposal)
+      flow.add_stakeholder(martin)
       expect(ProposingMailer).to have_received(:propose).with(
             recipient: martin,
             subject: 'New proposal from J.R.R. Tolkein',
@@ -59,7 +58,7 @@ describe ProposalFlow do
     end
   end
 
-  describe '#proposals' do
+  describe '.all_proposals' do
     let!(:proposal1) do
       Proposal.create!(proposer: 'J.K. Rowling', description: 'more spells').tap do |proposal|
         proposal.stakeholders.create! email: martin
@@ -73,7 +72,7 @@ describe ProposalFlow do
       end
     end
 
-    let(:proposals) { ProposalFlow.new.proposals }
+    let(:proposals) { ProposalFlow.all_proposals }
 
     specify { expect(proposals.size).to eq(2) }
 
@@ -90,10 +89,9 @@ describe ProposalFlow do
   end
 
   describe '#parse_emails' do
-    let(:flow) { ProposalFlow.new }
-    specify { expect(flow.send(:parse_emails, 'a@example.com b@example.com')).to eq ['a@example.com', 'b@example.com'] }
-    specify { expect(flow.send(:parse_emails, 'a@example.com, b@example.com')).to eq ['a@example.com', 'b@example.com'] }
-    specify { expect(flow.send(:parse_emails, "  a@example.com   , \t \nb@example.com")).to eq ['a@example.com', 'b@example.com'] }
-    specify { expect(flow.send(:parse_emails, " a@example.com ", "  b@example.com \nc@example.com")).to eq ['a@example.com', 'b@example.com', 'c@example.com'] }
+    specify { expect(ProposalFlow.send(:parse_emails, 'a@example.com b@example.com')).to eq ['a@example.com', 'b@example.com'] }
+    specify { expect(ProposalFlow.send(:parse_emails, 'a@example.com, b@example.com')).to eq ['a@example.com', 'b@example.com'] }
+    specify { expect(ProposalFlow.send(:parse_emails, "  a@example.com   , \t \nb@example.com")).to eq ['a@example.com', 'b@example.com'] }
+    specify { expect(ProposalFlow.send(:parse_emails, " a@example.com ", "  b@example.com \nc@example.com")).to eq ['a@example.com', 'b@example.com', 'c@example.com'] }
   end
 end
