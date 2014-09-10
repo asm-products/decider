@@ -26,6 +26,7 @@ class ProposalFlow
     ProposingMailer.propose(
       recipient: stakeholder_email,
       subject: "New proposal from #{@proposal.proposer}",
+      proposer: @proposal.proposer,
       proposal: @proposal.description,
       reply_id: reply.id
     ).deliver

@@ -52,6 +52,7 @@ describe ProposalFlow do
       expect(ProposingMailer).to have_received(:propose).with(
             recipient: martin,
             subject: 'New proposal from J.R.R. Tolkein',
+            proposer: 'J.R.R. Tolkein',
             proposal: 'new elf world',
             reply_id: Reply.last.id
           )
