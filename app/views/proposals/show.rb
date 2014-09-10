@@ -15,13 +15,19 @@ class Views::Proposals::Show < Views::Base
     table(class: 'proposals') do
       tr do
         th 'Stakeholder'
-        th 'Objection'
+        th 'Reply'
       end
 
       proposal.replies.each do |reply|
         tr do
           td reply.stakeholder.email
-          td 'x'
+          td do
+            text case reply.value
+              when true then 'no objection'
+              when false then 'objection'
+              else 'no reply'
+            end
+          end
         end
       end
     end
