@@ -27,7 +27,11 @@ describe ProposalFlow do
     end
 
     describe 'creating replies' do
-      specify { expect(last_proposal.replies.map(&:stakeholder).map(&:email)).to match_array [tolkein, martin, rowling, gaiman] }
+      specify do
+        expect(last_proposal.replies.map(&:stakeholder).
+                        map(&:email)).to match_array [tolkein, martin, rowling, gaiman]
+      end
+
       specify { expect(last_proposal.replies.map(&:value)).to match_array [nil, nil, nil, nil] }
     end
 

@@ -8,8 +8,8 @@ class ProposalFlow
   end
 
   def add_stakeholder(stakeholder_email, proposal)
-    stakeholder = proposal.stakeholders.create!(email: stakeholder_email)
-    reply = proposal.replies.create!(stakeholder_id: stakeholder.id)
+    stakeholder = Stakeholder.create!(email: stakeholder_email)
+    reply = proposal.replies.create!(stakeholder: stakeholder)
 
     ProposingMailer.propose(
       recipient: stakeholder_email,
