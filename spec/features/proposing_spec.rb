@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe 'proposing', type: :feature do
-  specify do
+  describe 'happy path' do
     visit '/proposals/new'
     fill_in 'proposal[proposer]', with: 'J.K. Rowling'
     fill_in 'proposal[proposer_email]', with: 'jk@example.com'
