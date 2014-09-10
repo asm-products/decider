@@ -5,38 +5,74 @@ RSpec.describe 'proposing', type: :feature do
     ActionMailer::Base.deliveries.find { |mail| mail.to.first == "#{username}@example.com" }
   end
 
-  it 'happy path' do
-    # create a proposal
+  def proposal_details_page
+    %r|/proposals/\d+|
+  end
+
+  def create_proposal(description)
     visit '/proposals/new'
-    fill_in 'proposal[proposer]', with: 'J.K. Rowling'
-    fill_in 'proposal[proposer_email]', with: 'jk@example.com'
-    fill_in 'proposal[description]', with: 'more spells'
-    fill_in 'proposal[stakeholder_emails]', with: 'dadams@example.com oscard@example.com lalexander@example.com'
+    fill_in 'proposal[proposer]', with: 'Paul Proposer'
+    fill_in 'proposal[proposer_email]', with: 'paul@example.com'
+    fill_in 'proposal[description]', with: description
+    fill_in 'proposal[stakeholder_emails]', with: 'alice@example.com billy@example.com cindy@example.com'
     click_button 'Create Proposal'
+  end
 
-    expect(page).to have_content('J.K. Rowling proposed more spells')
+  def reply_link(recipient, value)
+    email_for(recipient).body.match(/(http:.*#{value})/)[0]
+  end
 
-    # douglas adams receives an email and does not object
-    adams_email = email_for('dadams')
-    expect(adams_email.subject).to include('J.K. Rowling')
-    expect(adams_email.body).to include('more spells')
-    no_objection_path = adams_email.body.match(/(http:.*true)/)[0]
-    visit no_objection_path
+  def no_objection_link(recipient)
+    reply_link(recipient, true)
+  end
 
-    # orson scott card receives an email and objects
-    oscard_email = email_for('oscard')
-    objection_path = oscard_email.body.match(/(http:.*false)/)[0]
-    visit objection_path
+  def objection_link(recipient)
+    reply_link(recipient, false)
+  end
 
-    # proposal details page
-    expect(page).to have_content('J.K. Rowling')
-    expect(page).to have_content('more spells')
-    expect(page).to have_selector('tr', text: /dadams@example.com\s*no objection/)
-    expect(page).to have_selector('tr', text: /oscard@example.com\s*objection/)
-    expect(page).to have_selector('tr', text: /lalexander@example.com\s*no reply/)
+  specify 'adopted proposal flow' do
+    create_proposal 'perfect proposal'
+
+    expect(current_path).to eq root_path
+    expect(page).to have_content('Paul Proposer proposed perfect proposal')
+
+    expect(ActionMailer::Base.deliveries.count).to eq 4
+    expect(ActionMailer::Base.deliveries.map(&:subject).uniq).to eq ['New proposal from Paul Proposer']
+
+    visit no_objection_link('alice')
+    visit objection_link('billy')
+
+    expect(current_path).to match proposal_details_page
+    expect(page).to have_content('Paul Proposer')
+    expect(page).to have_content('perfect proposal')
+    expect(page).to have_selector('tr', text: /alice@example.com\s*no objection/)
+    expect(page).to have_selector('tr', text: /billy@example.com\s*objection/)
+    expect(page).to have_selector('tr', text: /cindy@example.com\s*no reply/)
+
+    click_button 'Adopt this proposal'
+    expect(page).to have_content('Proposal adopted')
+    expect(page).to_not have_selector('button', text: 'Adopt this proposal')
+    expect(page).to_not have_selector('button', text: 'Reject this proposal')
 
     click_link 'Proposals'
-
     expect(current_path).to eq(root_path)
+    expect(page).to have_content('perfect proposal - Adopted')
+  end
+
+  specify 'rejected proposal flow' do
+    create_proposal 'putrid proposal'
+    expect(page).to have_content('Paul Proposer proposed putrid proposal')
+
+    visit objection_link('alice')
+    visit objection_link('billy')
+
+    click_button 'Reject this proposal'
+    expect(page).to have_content('Proposal rejected')
+    expect(page).to_not have_selector('button', text: 'Adopt this proposal')
+    expect(page).to_not have_selector('button', text: 'Reject this proposal')
+
+    click_link 'Proposals'
+    expect(current_path).to eq(root_path)
+    expect(page).to have_content('putrid proposal - Rejected')
   end
 end

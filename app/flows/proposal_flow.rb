@@ -8,14 +8,13 @@ class ProposalFlow
     end
   end
 
+  def self.for_proposal(proposal_id)
+    new(Proposal.find(proposal_id))
+  end
+
   def self.all_proposals
-    Proposal.all.map do |proposal|
-      {
-        id: proposal.to_param,
-        description: proposal.description,
-        proposer: proposal.proposer,
-        stakeholder_emails: proposal.stakeholders.map(&:email).sort
-      }
+    Proposal.order('created_at desc').map do |proposal|
+      new(proposal).proposal
     end
   end
 
@@ -30,6 +29,30 @@ class ProposalFlow
       proposal: @proposal.description,
       reply_id: reply.id
     ).deliver
+  end
+
+  def proposal
+    status = case @proposal.adopted
+      when true then 'Adopted'
+      when false then 'Rejected'
+      else 'Pending'
+    end
+
+    {
+      id: @proposal.to_param,
+      description: @proposal.description,
+      proposer: @proposal.proposer,
+      stakeholder_emails: @proposal.stakeholders.map(&:email).sort,
+      status: status
+    }
+  end
+
+  def adopt
+    @proposal.update! adopted: true
+  end
+
+  def reject
+    @proposal.update! adopted: false
   end
 
   private

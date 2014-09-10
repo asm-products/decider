@@ -41,6 +41,12 @@ describe ProposalFlow do
     end
   end
 
+  describe '.for_proposal' do
+    let(:proposal) { create :proposal, description: 'new elf world' }
+
+    specify { expect(ProposalFlow.for_proposal(proposal.id).proposal[:description]).to eq 'new elf world'}
+  end
+
   describe '#add_stakeholder' do
     let(:flow) { ProposalFlow.new(proposal) }
     let(:proposal) { Proposal.create! description: 'new elf world', proposer: 'J.R.R. Tolkein'}
@@ -59,33 +65,47 @@ describe ProposalFlow do
     end
   end
 
+  describe '#adopt and #reject' do
+    let(:proposal) { create :proposal }
+    let(:flow) { ProposalFlow.new(proposal) }
+
+    specify { expect { flow.adopt }.to change { proposal.reload.adopted }.from(nil).to(true) }
+    specify { expect { flow.reject }.to change { proposal.reload.adopted }.from(nil).to(false) }
+  end
+
   describe '.all_proposals' do
-    let!(:proposal1) do
-      Proposal.create!(proposer: 'J.K. Rowling', description: 'more spells').tap do |proposal|
-        proposal.stakeholders.create! email: martin
-        proposal.stakeholders.create! email: rowling
-      end
+    before do
+      create :proposal, description: 'p1'
+      create :proposal, description: 'p2'
     end
 
-    let!(:proposal2) do
-      Proposal.create!(proposer: 'J.R.R. Tolkein', description: 'new elf world').tap do |proposal|
-        proposal.stakeholders.create! email: gaiman
-      end
+    let(:all_proposals) { ProposalFlow.all_proposals }
+    specify { expect(all_proposals.map {|p| p[:description] }).to match_array %w[p1 p2] }
+  end
+
+  describe '#proposal' do
+    before do
+      proposal.stakeholders << create(:stakeholder, email: 'alice@example.com')
+      proposal.stakeholders << create(:stakeholder, email: 'billy@example.com')
     end
 
-    let(:proposals) { ProposalFlow.all_proposals }
+    let(:proposal) { create :proposal, description: 'more spells', proposer: 'J.R.R. Tolkein' }
+    let(:flow) { ProposalFlow.new(proposal) }
 
-    specify { expect(proposals.size).to eq(2) }
-
-    specify { expect(proposals.first[:id]).to match(/\d+/) }
+    specify { expect(flow.proposal[:id]).to eq proposal.id.to_s }
+    specify { expect(flow.proposal[:description]).to eq 'more spells' }
+    specify { expect(flow.proposal[:proposer]).to eq 'J.R.R. Tolkein' }
+    specify { expect(flow.proposal[:stakeholder_emails]).to match_array %w[alice@example.com billy@example.com] }
+    specify { expect(flow.proposal[:status]).to eq 'Pending' }
 
     specify do
-      proposals_without_id = proposals.each {|x| x.delete(:id) }
+      flow.adopt
+      expect(flow.proposal[:status]).to eq 'Adopted'
+    end
 
-      expect(proposals_without_id).to match_array([
-        { proposer: 'J.K. Rowling', description: 'more spells', stakeholder_emails: [martin, rowling] },
-        { proposer: 'J.R.R. Tolkein', description: 'new elf world', stakeholder_emails: [gaiman] }
-      ])
+    specify do
+      flow.reject
+      expect(flow.proposal[:status]).to eq 'Rejected'
     end
   end
 

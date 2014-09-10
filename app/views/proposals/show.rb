@@ -1,5 +1,5 @@
 class Views::Proposals::Show < Views::Base
-  needs :proposal
+  needs :proposal, :adopt_proposal_path, :reject_proposal_path
 
   def content
     link_to 'Proposals', root_path
@@ -30,6 +30,16 @@ class Views::Proposals::Show < Views::Base
           end
         end
       end
+    end
+
+    case proposal.adopted
+      when true
+        p "Proposal adopted"
+      when false
+        p "Proposal rejected"
+      else
+        div button_to('Adopt this proposal', adopt_proposal_path, method: :patch)
+        div button_to('Reject this proposal', reject_proposal_path, method: :patch)
     end
   end
 end

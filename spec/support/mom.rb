@@ -1,22 +1,14 @@
 class Mom
-  def build(thing)
-    self.send(thing)
-  end
-
-  def create(thing)
-    self.send(thing).tap(&:save!)
-  end
-
   def reply
     Reply.new proposal: proposal, stakeholder: stakeholder
   end
 
-  def proposal
-    Proposal.new description: 'wear beige', proposer: 'Paul Proposer'
+  def proposal(description: 'wear beige', proposer: 'Paul Proposer')
+    Proposal.new description: description, proposer: proposer
   end
 
-  def stakeholder
-    Stakeholder.new email: 'stakeholder@example.com'
+  def stakeholder(email: 'stakeholder@example.com')
+    Stakeholder.new email: email
   end
 end
 
@@ -24,10 +16,10 @@ def mom
   @mom ||= Mom.new
 end
 
-def build(thing)
-  mom.build(thing)
+def build(thing, *args)
+  mom.send(thing, *args)
 end
 
-def create(thing)
-  mom.create(thing)
+def create(thing, *args)
+  mom.send(thing, *args).tap(&:save!)
 end

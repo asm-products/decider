@@ -11,6 +11,7 @@ class Views::Proposals::Index < Views::Base
         p do
           text "#{proposal[:proposer]} proposed "
           text link_to(proposal[:description], proposal_path(id: proposal[:id]))
+          text " - #{proposal[:status]}"
         end
       end
     end
