@@ -11,4 +11,10 @@ class ProposingMailer < ActionMailer::Base
 
     mail to: recipient, subject: subject
   end
+
+  def status_update(stakeholder_emails:,description:,status:)
+    @description = description
+    @status = status
+    mail to: stakeholder_emails, subject: "Proposal #{status}: #{description}"
+  end
 end

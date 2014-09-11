@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ProposingMailer, type: :mailer do
+describe ProposingMailer, type: :mailer do
   describe "proposal" do
     let(:mail) do
       ProposingMailer.propose(
@@ -23,5 +23,27 @@ RSpec.describe ProposingMailer, type: :mailer do
       expect(mail.body.encoded).to include 'http://test.host/replies/123?value=true'
       expect(mail.body.encoded).to include 'http://test.host/replies/123?value=false'
     end
+  end
+
+  describe 'status_update' do
+    let(:stakeholder_emails) do
+      ['b@example.com', 'c@example.com']
+    end
+    let(:mail) do
+      ProposingMailer.status_update(
+        stakeholder_emails: stakeholder_emails,
+        description: 'new elf world',
+        status: 'Adopted'
+      )
+    end
+
+    describe 'renders the headers' do
+      specify { expect(mail.subject).to eq('Proposal Adopted: new elf world') }
+      specify { expect(mail.to).to eq(stakeholder_emails) }
+      specify { expect(mail.from).to eq(['decider@citizencode.io']) }
+    end
+
+    specify { expect(mail.body.encoded).to include('Adopted') }
+    specify { expect(mail.body.encoded).to include('new elf world') }
   end
 end

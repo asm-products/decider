@@ -65,12 +65,41 @@ describe ProposalFlow do
     end
   end
 
-  describe '#adopt and #reject' do
-    let(:proposal) { create :proposal }
+  describe 'status change' do
+    let(:proposal) { create :proposal_with_stakeholders }
     let(:flow) { ProposalFlow.new(proposal) }
 
-    specify { expect { flow.adopt }.to change { proposal.reload.adopted }.from(nil).to(true) }
-    specify { expect { flow.reject }.to change { proposal.reload.adopted }.from(nil).to(false) }
+    before do
+      allow(ProposingMailer).to receive(:status_update).and_call_original
+    end
+
+    specify { expect(flow.proposal[:status]).to eq('Pending') }
+
+    describe '#adopt' do
+      before { flow.adopt }
+      specify { expect(flow.proposal[:status]).to eq('Adopted') }
+
+      specify do
+        expect(ProposingMailer).to have_received(:status_update).with(
+          stakeholder_emails: proposal.stakeholders.map(&:email),
+          description: proposal.description,
+          status: 'Adopted'
+        )
+      end
+    end
+
+    describe "#reject" do
+      before { flow.reject }
+      specify { expect(flow.proposal[:status]).to eq('Rejected') }
+
+      specify do
+        expect(ProposingMailer).to have_received(:status_update).with(
+          stakeholder_emails: proposal.stakeholders.map(&:email),
+          description: proposal.description,
+          status: 'Rejected'
+        )
+      end
+    end
   end
 
   describe '.all_proposals' do

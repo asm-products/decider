@@ -49,13 +49,21 @@ class ProposalFlow
 
   def adopt
     @proposal.update! adopted: true
+    deliver_status_update
   end
 
   def reject
     @proposal.update! adopted: false
+    deliver_status_update
   end
 
   private
+
+  def deliver_status_update
+    ProposingMailer.
+      status_update(proposal.slice(:stakeholder_emails, :description, :status)).
+      deliver
+  end
 
   def initialize(proposal)
     @proposal = proposal

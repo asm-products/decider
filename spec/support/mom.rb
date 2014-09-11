@@ -3,8 +3,13 @@ class Mom
     Reply.new proposal: proposal, stakeholder: stakeholder
   end
 
-  def proposal(description: 'wear beige', proposer: 'Paul Proposer')
-    Proposal.new description: description, proposer: proposer
+  def proposal(description: 'wear beige', proposer: 'Paul Proposer', stakeholders: [])
+    Proposal.new description: description, proposer: proposer, stakeholders: stakeholders
+  end
+
+  def proposal_with_stakeholders
+    proposal(stakeholders: [stakeholder(email:'a@example.com'),
+                            stakeholder(email: 'b@example.com')])
   end
 
   def stakeholder(email: 'stakeholder@example.com')

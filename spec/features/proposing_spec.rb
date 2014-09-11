@@ -66,6 +66,8 @@ RSpec.describe 'proposing', type: :feature do
     visit objection_link('alice')
     visit objection_link('billy')
 
+    ActionMailer::Base.deliveries.clear
+
     click_button 'Reject this proposal'
     expect(page).to have_content('Proposal rejected')
     expect(page).to_not have_selector('button', text: 'Adopt this proposal')
@@ -74,5 +76,8 @@ RSpec.describe 'proposing', type: :feature do
     click_link 'Proposals'
     expect(current_path).to eq(root_path)
     expect(page).to have_content('putrid proposal - Rejected')
+
+    alice_email = email_for('alice')
+    expect(alice_email.subject).to eq('Proposal Rejected: putrid proposal')
   end
 end
