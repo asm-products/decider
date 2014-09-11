@@ -8,4 +8,12 @@ class ProposingMailerPreview < ActionMailer::Preview
         reply_id: 123
       )
   end
+
+  def status_update
+    ProposingMailer.status_update(
+        stakeholder_emails: %w[a@example.com b@example.com],
+        description: 'new elf world',
+        status: 'Adopted'
+      )
+  end
 end
