@@ -113,9 +113,15 @@ describe ProposalFlow do
   end
 
   describe '#proposal' do
+    let(:alice) { create(:stakeholder, email: 'alice@example.com') }
+    let(:billy) { create(:stakeholder, email: 'billy@example.com') }
+    let(:cindy) { create(:stakeholder, email: 'cindy@example.com') }
+
     before do
-      proposal.stakeholders << create(:stakeholder, email: 'alice@example.com')
-      proposal.stakeholders << create(:stakeholder, email: 'billy@example.com')
+      proposal.stakeholders << alice << billy << cindy
+
+      Reply.where(stakeholder_id: billy.id, proposal_id: proposal.id).first.update! value: true
+      Reply.where(stakeholder_id: cindy.id, proposal_id: proposal.id).first.update! value: false
     end
 
     let(:proposal) { create :proposal, description: 'more spells', proposer: 'J.R.R. Tolkein' }
@@ -124,8 +130,17 @@ describe ProposalFlow do
     specify { expect(flow.proposal[:id]).to eq proposal.id.to_s }
     specify { expect(flow.proposal[:description]).to eq 'more spells' }
     specify { expect(flow.proposal[:proposer]).to eq 'J.R.R. Tolkein' }
-    specify { expect(flow.proposal[:stakeholder_emails]).to match_array %w[alice@example.com billy@example.com] }
+    specify { expect(flow.proposal[:stakeholder_emails]).to match_array %w[alice@example.com billy@example.com cindy@example.com] }
     specify { expect(flow.proposal[:status]).to eq 'Pending' }
+    specify { expect(flow.proposal[:has_decision]).to eq false }
+
+    specify do
+      expect(flow.proposal[:replies]).to match_array([
+        { stakeholder_email: 'alice@example.com', value: 'no reply' },
+        { stakeholder_email: 'billy@example.com', value: 'no objection'},
+        { stakeholder_email: 'cindy@example.com', value: 'objection'}
+      ])
+    end
 
     specify do
       flow.adopt

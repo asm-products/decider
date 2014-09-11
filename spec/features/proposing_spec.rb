@@ -50,7 +50,7 @@ RSpec.describe 'proposing', type: :feature do
     expect(page).to have_selector('tr', text: /cindy@example.com\s*no reply/)
 
     click_button 'Adopt this proposal'
-    expect(page).to have_content('Proposal adopted')
+    expect(page).to have_content('Proposal Adopted')
     expect(page).to_not have_selector('button', text: 'Adopt this proposal')
     expect(page).to_not have_selector('button', text: 'Reject this proposal')
 
@@ -69,7 +69,7 @@ RSpec.describe 'proposing', type: :feature do
     ActionMailer::Base.deliveries.clear
 
     click_button 'Reject this proposal'
-    expect(page).to have_content('Proposal rejected')
+    expect(page).to have_content('Proposal Rejected')
     expect(page).to_not have_selector('button', text: 'Adopt this proposal')
     expect(page).to_not have_selector('button', text: 'Reject this proposal')
 

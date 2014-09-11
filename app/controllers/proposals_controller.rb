@@ -19,9 +19,9 @@ class ProposalsController < ApplicationController
   end
 
   def show
-    @proposal = Proposal.find(params[:id])
-    @adopt_proposal_path = proposal_path(@proposal, adopted: true)
-    @reject_proposal_path = proposal_path(@proposal, adopted: false)
+    @proposal = ProposalFlow.for_proposal(params[:id]).proposal
+    @adopt_proposal_path = proposal_path(params[:id], adopted: true)
+    @reject_proposal_path = proposal_path(params[:id], adopted: false)
   end
 
   def update

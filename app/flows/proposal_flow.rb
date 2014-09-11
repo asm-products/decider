@@ -43,8 +43,24 @@ class ProposalFlow
       description: @proposal.description,
       proposer: @proposal.proposer,
       stakeholder_emails: @proposal.stakeholders.map(&:email).sort,
-      status: status
+      status: status,
+      has_decision: !@proposal.adopted.nil?,
+      replies: replies
     }
+  end
+
+  def replies
+    @proposal.replies.map do |reply|
+      {}.tap do |hash|
+        hash[:stakeholder_email] = reply.stakeholder.email
+
+        hash[:value] = case reply.value
+          when true then 'no objection'
+          when false then 'objection'
+          else 'no reply'
+        end
+      end
+    end
   end
 
   def adopt
