@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.1.2'
 
+gem 'annotate'
 gem 'awesome_print'
 gem 'capybara', group: [:development, :test]
 gem 'coffee-rails', '~> 4.0.0'
