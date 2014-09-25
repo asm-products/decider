@@ -15,6 +15,10 @@ class Mom
   def stakeholder(email: 'stakeholder@example.com')
     Stakeholder.new email: email
   end
+
+  def user(email: 'user@example.com', name: 'name', password: 'password')
+    User.new email: email, name: name, password: password
+  end
 end
 
 def mom

@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: replies
+#
+#  id             :integer          not null, primary key
+#  value          :boolean
+#  proposal_id    :integer
+#  stakeholder_id :integer
+#  created_at     :datetime
+#  updated_at     :datetime
+#
+
 require 'rails_helper'
 
 describe Reply do
