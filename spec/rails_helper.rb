@@ -12,3 +12,11 @@ RSpec.configure do |config|
   config.before(:each) { ActionMailer::Base.deliveries.clear }
   config.include Sorcery::TestHelpers::Rails::Controller, type: :controller
 end
+
+def sign_up_through_route(email, name)
+  visit '/users/new'
+  fill_in 'user[email]', with: email
+  fill_in 'user[name]', with: name
+  fill_in 'user[password]', with: 'password'
+  click_button 'Sign Up'
+end
