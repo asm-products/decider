@@ -14,11 +14,12 @@ class Views::Layouts::Application < Views::Base
           if logged_in?
             ul do
               li "Welcome, #{current_user.name}"
-              li link_to "Logout", logout_path
+              li link_to "Logout", logout_path, method: :post
             end
           else
             ul do
               li link_to "Sign In", login_path
+              li link_to "Sign Up", new_user_path
             end
           end
         end
