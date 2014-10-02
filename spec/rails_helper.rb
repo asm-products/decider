@@ -31,3 +31,10 @@ def sign_up_through_route(email, name)
   fill_in 'user[password]', with: 'password'
   click_button 'Sign Up'
 end
+
+def sign_in_through_route(email)
+  visit '/login'
+  fill_in "Email", with: email
+  fill_in "Password", with: "password"
+  click_button "Sign In"
+end
