@@ -16,8 +16,15 @@ class Views::Layouts::Application < Views::Base
       end
 
       body do
-
         render template: 'shared/nav'
+
+        flash.each do |name, msg|
+          if msg.is_a? String
+            div class: "flash_#{name} alert-box alert", "data-alert" => "" do
+              text msg
+            end
+          end
+        end
 
         yield
 
