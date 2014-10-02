@@ -10,5 +10,6 @@ RSpec.describe 'login', type: :feature do
 
     expect(current_path).to eq root_path
     expect(page).to have_content 'Welcome, Active User'
+    expect(page).to have_link 'Logout'
   end
 end
