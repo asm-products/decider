@@ -1,6 +1,7 @@
 class Views::Layouts::Application < Views::Base
+
   def content
-    html doctype: :html5 do
+    html do
       head do
         title "Citizen Decider"
         stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
@@ -20,4 +21,5 @@ class Views::Layouts::Application < Views::Base
       end
     end
   end
+
 end
