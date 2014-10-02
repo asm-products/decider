@@ -12,4 +12,9 @@ RSpec.describe 'login', type: :feature do
     expect(page).to have_content 'Welcome, Active User'
     expect(page).to have_link 'Logout'
   end
+
+  specify do
+    visit '/'
+    expect(page).to have_link "Sign In"
+  end
 end

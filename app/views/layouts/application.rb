@@ -9,14 +9,20 @@ class Views::Layouts::Application < Views::Base
         csrf_meta_tags
       end
       body do
-        if logged_in?
-          div class: :nav do
+        div class: :nav do
+
+          if logged_in?
             ul do
               li "Welcome, #{current_user.name}"
-              li link_to "Logout" , logout_path
+              li link_to "Logout", logout_path
+            end
+          else
+            ul do
+              li link_to "Sign In", login_path
             end
           end
         end
+
         yield
       end
     end
