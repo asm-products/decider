@@ -48,6 +48,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.8.0)
+    database_cleaner (1.3.0)
     diff-lcs (1.2.5)
     dotenv (0.11.1)
       dotenv-deployment (~> 0.0.2)
@@ -192,6 +193,7 @@ DEPENDENCIES
   awesome_print
   capybara
   coffee-rails (~> 4.0.0)
+  database_cleaner
   foreman
   fortitude
   jquery-rails

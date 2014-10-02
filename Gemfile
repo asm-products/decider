@@ -6,6 +6,7 @@ gem 'annotate'
 gem 'awesome_print'
 gem 'capybara', group: [:development, :test]
 gem 'coffee-rails', '~> 4.0.0'
+gem 'database_cleaner', group: [:test]
 gem 'foreman'
 gem 'fortitude'
 gem 'jquery-rails'
