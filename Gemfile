@@ -9,6 +9,7 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'database_cleaner', group: [:test]
 gem 'foreman'
 gem 'fortitude'
+gem 'foundation-rails'
 gem 'jquery-rails'
 gem 'launchy', group: [:development, :test]
 gem 'pivotal_git_scripts', group: :development
