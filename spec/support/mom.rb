@@ -1,23 +1,24 @@
 class Mom
   def reply
-    Reply.new proposal: proposal, stakeholder: stakeholder
+    Reply.new proposal: proposal, user: user
   end
 
-  def proposal(description: 'wear beige', proposer: 'Paul Proposer', stakeholders: [])
-    Proposal.new description: description, proposer: proposer, stakeholders: stakeholders
+  def proposal(description: 'wear beige', proposer: create(:user, name: 'Paul Proposer'), stakeholders: [])
+    Proposal.new description: description, user: proposer, users: stakeholders
   end
 
-  def proposal_with_stakeholders
-    proposal(stakeholders: [stakeholder(email:'a@example.com'),
-                            stakeholder(email: 'b@example.com')])
+  def proposal_with_users
+    proposal(stakeholders: [user, user])
   end
 
-  def stakeholder(email: 'stakeholder@example.com')
-    Stakeholder.new email: email
-  end
-
-  def user(email: 'user@example.com', name: 'name', password: 'password')
+  def user(email: "user#{random}@example.com", name: 'name', password: 'password')
     User.new email: email, name: name, password: password
+  end
+
+  private
+
+  def random
+    rand(10**10)
   end
 end
 

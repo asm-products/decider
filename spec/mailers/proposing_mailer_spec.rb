@@ -26,12 +26,12 @@ describe ProposingMailer, type: :mailer do
   end
 
   describe 'status_update' do
-    let(:stakeholder_emails) do
+    let(:user_emails) do
       ['b@example.com', 'c@example.com']
     end
     let(:mail) do
       ProposingMailer.status_update(
-        stakeholder_emails: stakeholder_emails,
+        user_emails: user_emails,
         description: 'new elf world',
         status: 'Adopted'
       )
@@ -39,7 +39,7 @@ describe ProposingMailer, type: :mailer do
 
     describe 'renders the headers' do
       specify { expect(mail.subject).to eq('Proposal Adopted: new elf world') }
-      specify { expect(mail.to).to eq(stakeholder_emails) }
+      specify { expect(mail.to).to eq(user_emails) }
       specify { expect(mail.from).to eq(['decider@citizencode.io']) }
     end
 

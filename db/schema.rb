@@ -11,29 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140925173938) do
+ActiveRecord::Schema.define(version: 20141002225804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "proposals", force: true do |t|
     t.text     "description"
-    t.string   "proposer"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "adopted"
+    t.integer  "user_id"
   end
 
   create_table "replies", force: true do |t|
     t.boolean  "value"
     t.integer  "proposal_id"
-    t.integer  "stakeholder_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "stakeholders", force: true do |t|
-    t.string   "email"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

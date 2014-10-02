@@ -23,7 +23,7 @@ describe Reply do
   end
 
   specify do
-    reply.stakeholder = nil
+    reply.user = nil
     expect(reply).to_not be_valid
   end
 end

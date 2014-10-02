@@ -1,9 +1,11 @@
 class ProposalFlow
-  def self.for_new_proposal(description:, proposer:, proposer_email:, stakeholder_emails:)
-    proposal = Proposal.create!(description: description, proposer: proposer)
+  def self.for_new_proposal(description:, proposer_id:, stakeholder_ids:)
+    proposer = User.find(proposer_id)
+    proposal = Proposal.create!(description: description, user: proposer)
     new(proposal).tap do |flow|
-      parse_emails(stakeholder_emails, proposer_email).each do |email|
-        flow.add_stakeholder(email)
+      flow.add_user(proposer)
+      User.where(id: stakeholder_ids).each do |user|
+        flow.add_user(user)
       end
     end
   end
@@ -18,14 +20,13 @@ class ProposalFlow
     end
   end
 
-  def add_stakeholder(stakeholder_email)
-    stakeholder = Stakeholder.create!(email: stakeholder_email)
-    reply = @proposal.replies.create!(stakeholder: stakeholder)
+  def add_user(user)
+    reply = @proposal.replies.create!(user: user)
 
     ProposingMailer.propose(
-      recipient: stakeholder_email,
-      subject: "New proposal from #{@proposal.proposer}",
-      proposer: @proposal.proposer,
+      recipient: user.email,
+      subject: "New proposal from #{@proposal.user.name}",
+      proposer: @proposal.user.name,
       proposal: @proposal.description,
       reply_id: reply.id
     ).deliver
@@ -41,8 +42,8 @@ class ProposalFlow
     {
       id: @proposal.to_param,
       description: @proposal.description,
-      proposer: @proposal.proposer,
-      stakeholder_emails: @proposal.stakeholders.map(&:email).sort,
+      proposer: @proposal.user.name,
+      user_emails: @proposal.users.map(&:email).sort,
       status: status,
       has_decision: !@proposal.adopted.nil?,
       replies: replies
@@ -52,7 +53,7 @@ class ProposalFlow
   def replies
     @proposal.replies.map do |reply|
       {}.tap do |hash|
-        hash[:stakeholder_email] = reply.stakeholder.email
+        hash[:user_email] = reply.user.email
 
         hash[:value] = case reply.value
           when true then 'no objection'
@@ -77,7 +78,7 @@ class ProposalFlow
 
   def deliver_status_update
     ProposingMailer.
-      status_update(proposal.slice(:stakeholder_emails, :description, :status)).
+      status_update(proposal.slice(:user_emails, :description, :status)).
       deliver
   end
 

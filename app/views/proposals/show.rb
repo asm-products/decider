@@ -22,7 +22,7 @@ class Views::Proposals::Show < Views::Base
 
       proposal[:replies].each do |reply|
         tr do
-          td reply[:stakeholder_email]
+          td reply[:user_email]
           td reply[:value]
         end
       end

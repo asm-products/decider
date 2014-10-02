@@ -30,6 +30,13 @@ RSpec.describe 'proposing', type: :feature do
     reply_link(recipient, false)
   end
 
+  before do
+    create :user, email: 'paul@example.com', name: 'Paul Proposer'
+    %w[alice@example.com billy@example.com cindy@example.com].each do |email|
+      create :user, email: email
+    end
+  end
+
   specify 'adopted proposal flow' do
     create_proposal 'perfect proposal'
 
