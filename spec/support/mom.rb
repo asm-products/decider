@@ -1,5 +1,5 @@
 class Mom
-  def reply
+  def reply(proposal: proposal(), user: user())
     Reply.new proposal: proposal, user: user
   end
 

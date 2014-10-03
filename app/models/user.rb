@@ -20,4 +20,6 @@ class User < ActiveRecord::Base
 
   validates_uniqueness_of :email
   validates :email, :name, :password, presence: true
+
+  has_many :replies, class_name: :Reply
 end

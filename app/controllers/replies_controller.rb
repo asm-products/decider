@@ -1,7 +1,7 @@
 class RepliesController < ApplicationController
   def show
-    reply = Reply.find(params[:id])
-    reply.update(value: params[:value])
-    redirect_to proposal_path(reply.proposal)
+    flow = ReplyFlow.new(user: current_user, reply_id: params[:id])
+    flow.reply(params[:value])
+    redirect_to proposal_path(flow.proposal_id)
   end
 end
