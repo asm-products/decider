@@ -15,7 +15,7 @@ describe ProposalFlow do
       ids << ""
 
       ProposalFlow.
-        new(user: tolkein).
+        new(proposer: tolkein).
         create_proposal(
           description: 'new elf world',
           stakeholder_ids: ids
@@ -46,17 +46,17 @@ describe ProposalFlow do
   describe 'proposal' do
     let(:proposal) { create :proposal, description: 'new elf world' }
 
-    specify { expect(ProposalFlow.new(user: tolkein, proposal_id: proposal.id).proposal.description).to eq 'new elf world' }
+    specify { expect(ProposalFlow.new(proposer: tolkein, proposal_id: proposal.id).proposal.description).to eq 'new elf world' }
   end
 
   describe '#add_user' do
-    let(:flow) { ProposalFlow.new(user: tolkein, proposal_id: proposal.id) }
+    let(:flow) { ProposalFlow.new(proposer: tolkein, proposal_id: proposal.id) }
     let(:proposal) { Proposal.create! description: 'new elf world', user: tolkein }
 
     specify do
       allow(ProposingMailer).to receive(:propose).and_call_original
 
-      flow.add_user(martin)
+      flow.add_stakeholder(martin)
       expect(ProposingMailer).to have_received(:propose).with(
         recipient: martin.email,
         subject: 'New proposal from J.R.R. Tolkein',
@@ -69,7 +69,7 @@ describe ProposalFlow do
 
   describe 'status change' do
     let(:proposal) { create :proposal_with_users }
-    let(:flow) { ProposalFlow.new(user: tolkein, proposal_id: proposal.id) }
+    let(:flow) { ProposalFlow.new(proposer: tolkein, proposal_id: proposal.id) }
 
     before do
       allow(ProposingMailer).to receive(:status_update).and_call_original
@@ -112,7 +112,7 @@ describe ProposalFlow do
       create :proposal, description: 'p2'
     end
 
-    let(:proposals) { ProposalFlow.new(user: user).proposals }
+    let(:proposals) { ProposalFlow.new(proposer: user).proposals }
     specify { expect(proposals.map { |p| p.description }).to match_array %w[p1 p2] }
   end
 end

@@ -1,20 +1,20 @@
 class ProposalFlow
-  def initialize(user:, proposal_id: nil)
-    @proposer = user
+  def initialize(proposer:, proposal_id: nil)
+    @proposer = proposer
     @proposal = Proposal.find_by(id: proposal_id)
   end
 
   def create_proposal(description:, stakeholder_ids:)
     @proposal = Proposal.create!(description: description, user: @proposer)
-    add_user(@proposer)
-    User.where(id: stakeholder_ids).each { |user| add_user(user) }
+    add_stakeholder(@proposer)
+    User.where(id: stakeholder_ids).each { |stakeholder| add_stakeholder(stakeholder) }
   end
 
-  def add_user(user)
-    reply = @proposal.replies.create!(user: user)
+  def add_stakeholder(stakeholder)
+    reply = @proposal.replies.create!(user: stakeholder)
 
     ProposingMailer.propose(
-      recipient: user.email,
+      recipient: stakeholder.email,
       subject: "New proposal from #{@proposal.user.name}",
       proposer: @proposal.user.name,
       proposal: @proposal.description,
