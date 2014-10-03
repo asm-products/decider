@@ -20,6 +20,10 @@ class ProposalFlow
     end
   end
 
+  def self.for_user(user)
+    User.all - [user]
+  end
+
   def add_user(user)
     reply = @proposal.replies.create!(user: user)
 

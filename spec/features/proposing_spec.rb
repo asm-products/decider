@@ -17,6 +17,11 @@ RSpec.describe 'proposing', type: :feature do
     check "alice"
     check "billy"
     check "cindy"
+
+    within '.stakeholders' do
+      expect(all('label').map(&:text)).to match_array %w[alice billy cindy]
+    end
+
     click_button 'Create Proposal'
   end
 
@@ -40,6 +45,7 @@ RSpec.describe 'proposing', type: :feature do
   end
 
   specify 'adopted proposal flow' do
+    sign_in_through_route 'paul@example.com'
     create_proposal 'perfect proposal'
 
     expect(current_path).to eq root_path
@@ -69,6 +75,8 @@ RSpec.describe 'proposing', type: :feature do
   end
 
   specify 'rejected proposal flow' do
+    sign_in_through_route 'paul@example.com'
+
     create_proposal 'putrid proposal'
     expect(page).to have_content('Paul Proposer proposed putrid proposal')
 

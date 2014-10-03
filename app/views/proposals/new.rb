@@ -1,4 +1,6 @@
 class Views::Proposals::New < Views::Base
+  needs :possible_stakeholders
+
   def content
     form_for(:proposal, url: proposals_path, method: :post) do |f|
       p do
@@ -19,9 +21,10 @@ class Views::Proposals::New < Views::Base
 
       p { textarea(id: 'description', name: 'proposal[description]') }
 
-      h2 { label('Stakeholders', for: 'stakeholder_emails') }
+      div class: 'stakeholders' do
+        f.collection_check_boxes(:user_ids, possible_stakeholders, :id, :name)
+      end
 
-      f.collection_check_boxes(:user_ids, User.all, :id, :name)
       input(type: :submit, value: 'Create Proposal')
     end
   end

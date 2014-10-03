@@ -1,5 +1,6 @@
 class ProposalsController < ApplicationController
   def new
+    @possible_stakeholders = ProposalFlow.for_user(current_user)
   end
 
   def create
