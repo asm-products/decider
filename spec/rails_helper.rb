@@ -25,8 +25,10 @@ RSpec.configure do |config|
 end
 
 def sign_up_through_route(email, name)
-  visit '/'
-  click_link "Sign Up"
+  unless current_path == new_user_path
+    visit '/'
+    click_link "Sign Up"
+  end
   fill_in 'user[email]', with: email
   fill_in 'user[name]', with: name
   fill_in 'user[password]', with: 'password'
@@ -34,9 +36,15 @@ def sign_up_through_route(email, name)
 end
 
 def sign_in_through_route(email)
-  visit '/'
-  click_link "Sign In"
+  unless current_path == login_path
+    visit '/'
+    click_link "Sign In"
+  end
   fill_in "Email", with: email
   fill_in "Password", with: "password"
   click_button "Sign In"
+end
+
+def logout
+  click_link 'Logout'
 end

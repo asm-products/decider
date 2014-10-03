@@ -48,14 +48,19 @@ RSpec.describe 'proposing', type: :feature do
     sign_in_through_route 'paul@example.com'
     create_proposal 'perfect proposal'
 
-    expect(current_path).to eq root_path
+    expect(current_path).to eq proposals_path
     expect(page).to have_content('Paul Proposer proposed perfect proposal')
 
     expect(ActionMailer::Base.deliveries.count).to eq 4
     expect(ActionMailer::Base.deliveries.map(&:subject).uniq).to eq ['New proposal from Paul Proposer']
 
+    logout
     visit no_objection_link('alice')
+    sign_in_through_route 'alice@example.com'
+
+    logout
     visit objection_link('billy')
+    sign_in_through_route 'billy@example.com'
 
     expect(current_path).to match proposal_details_page
     expect(page).to have_content('Paul Proposer')
@@ -70,7 +75,7 @@ RSpec.describe 'proposing', type: :feature do
     expect(page).to_not have_selector('button', text: 'Reject this proposal')
 
     click_link 'Proposals'
-    expect(current_path).to eq(root_path)
+    expect(current_path).to eq(proposals_path)
     expect(page).to have_content('perfect proposal - Adopted')
   end
 
@@ -80,8 +85,13 @@ RSpec.describe 'proposing', type: :feature do
     create_proposal 'putrid proposal'
     expect(page).to have_content('Paul Proposer proposed putrid proposal')
 
+    logout
     visit objection_link('alice')
+    sign_in_through_route('alice@example.com')
+
+    logout
     visit objection_link('billy')
+    sign_in_through_route('billy@example.com')
 
     ActionMailer::Base.deliveries.clear
 
@@ -91,7 +101,7 @@ RSpec.describe 'proposing', type: :feature do
     expect(page).to_not have_selector('button', text: 'Reject this proposal')
 
     click_link 'Proposals'
-    expect(current_path).to eq(root_path)
+    expect(current_path).to eq(proposals_path)
     expect(page).to have_content('putrid proposal - Rejected')
 
     alice_email = email_for('alice')

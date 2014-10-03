@@ -33,11 +33,11 @@ class ProposalFlow
   end
 
   def proposal
-    ProposalPresenter.new(@proposal)
+    ::ProposalPresenter.new(@proposal)
   end
 
   def proposals
-    ProposalPresenter.map(Proposal.newest_first)
+    ::ProposalPresenter.map(Proposal.newest_first)
   end
 
   def possible_stakeholders
