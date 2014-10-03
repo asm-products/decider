@@ -7,14 +7,15 @@ class Views::Base < Fortitude::Widget
     end
   end
 
-  def field(f, field)
+  def field(f, field, label_text: nil)
     has_errors = f.object.errors[field].any?
-    error_class = has_errors ? 'error' : ''
+    wrapper_classes = [field.to_s]
+    wrapper_classes << 'error' if has_errors
 
     row do
-      div class: error_class do
+      div class: wrapper_classes do
         f.label field do
-          text field.to_s.capitalize
+          text label_text || field.to_s.capitalize
           yield
         end
         if has_errors

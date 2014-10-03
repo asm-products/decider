@@ -1,31 +1,26 @@
 class Views::Proposals::New < Views::Base
-  needs :possible_stakeholders
+  needs :possible_stakeholders, :proposal
 
   def content
-    form_for(:proposal, url: proposals_path, method: :post) do |f|
-      p do
-        label('My Name', for: 'proposer')
-        input(type: :text, id: 'proposer', name: 'proposal[proposer]')
+    row do
+      h1 'Create New Proposal'
+    end
+
+    form_for(proposal) do |f|
+      field(f, :description, label_text: 'I propose...') do
+        f.text_area :description, required: true, placeholder: 'Example: we use Citizen Decider to make quick decisions'
       end
 
-      p do
-        label('My Email', for: 'proposer_email')
-        input(type: :text, id: 'proposer_email', name: 'proposal[proposer_email]')
+      row do
+        label 'Stakeholders'
+        div class: 'stakeholders' do
+          f.collection_check_boxes(:user_ids, possible_stakeholders, :id, :name)
+        end
       end
 
-      h2 { label('Proposal', for: 'description') }
-
-      p 'Example: "I propose we use Citizen Decider to make quick decisions"'
-
-      p 'I propose:'
-
-      p { textarea(id: 'description', name: 'proposal[description]') }
-
-      div class: 'stakeholders' do
-        f.collection_check_boxes(:user_ids, possible_stakeholders, :id, :name)
+      row do
+        input type: :submit, value: 'Create Proposal', class: :button
       end
-
-      input(type: :submit, value: 'Create Proposal')
     end
   end
 end

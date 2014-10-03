@@ -11,8 +11,6 @@ RSpec.describe 'proposing', type: :feature do
 
   def create_proposal(description)
     visit '/proposals/new'
-    fill_in 'proposal[proposer]', with: 'Paul Proposer'
-    fill_in 'proposal[proposer_email]', with: 'paul@example.com'
     fill_in 'proposal[description]', with: description
     check "alice"
     check "billy"
