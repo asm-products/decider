@@ -9,9 +9,9 @@ class Views::Proposals::Index < Views::Base
     div(class: :proposals) do
       proposals.each do |proposal|
         p do
-          text "#{proposal[:proposer]} proposed "
-          text link_to(proposal[:description], proposal_path(id: proposal[:id]))
-          text " - #{proposal[:status]}"
+          text "#{proposal.proposer} proposed "
+          text link_to(proposal.description, proposal_path(id: proposal.id))
+          text " - #{proposal.status}"
         end
       end
     end

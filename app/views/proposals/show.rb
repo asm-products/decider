@@ -8,9 +8,9 @@ class Views::Proposals::Show < Views::Base
 
     p do
       b do
-        text proposal[:proposer]
+        text proposal.proposer
         text ' proposed '
-        text proposal[:description]
+        text proposal.description
       end
     end
 
@@ -20,16 +20,16 @@ class Views::Proposals::Show < Views::Base
         th 'Reply'
       end
 
-      proposal[:replies].each do |reply|
+      proposal.replies.each do |reply|
         tr do
-          td reply[:user_email]
-          td reply[:value]
+          td reply.user_email
+          td reply.value
         end
       end
     end
 
-    if proposal[:has_decision]
-      p "Proposal #{proposal[:status]}"
+    if proposal.has_decision?
+      p "Proposal #{proposal.status}"
     else
       div button_to('Adopt this proposal', adopt_proposal_path, method: :patch)
       div button_to('Reject this proposal', reject_proposal_path, method: :patch)

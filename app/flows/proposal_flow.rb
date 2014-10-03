@@ -1,27 +1,13 @@
 class ProposalFlow
-  def self.for_new_proposal(description:, proposer_id:, stakeholder_ids:)
-    proposer = User.find(proposer_id)
-    proposal = Proposal.create!(description: description, user: proposer)
-    new(proposal).tap do |flow|
-      flow.add_user(proposer)
-      User.where(id: stakeholder_ids).each do |user|
-        flow.add_user(user)
-      end
-    end
+  def initialize(user:, proposal_id: nil)
+    @proposer = user
+    @proposal = Proposal.find_by(id: proposal_id)
   end
 
-  def self.for_proposal(proposal_id)
-    new(Proposal.find(proposal_id))
-  end
-
-  def self.all_proposals
-    Proposal.order('created_at desc').map do |proposal|
-      new(proposal).proposal
-    end
-  end
-
-  def self.for_user(user)
-    User.all - [user]
+  def create_proposal(description:, stakeholder_ids:)
+    @proposal = Proposal.create!(description: description, user: @proposer)
+    add_user(@proposer)
+    User.where(id: stakeholder_ids).each { |user| add_user(user) }
   end
 
   def add_user(user)
@@ -36,38 +22,6 @@ class ProposalFlow
     ).deliver
   end
 
-  def proposal
-    status = case @proposal.adopted
-      when true then 'Adopted'
-      when false then 'Rejected'
-      else 'Pending'
-    end
-
-    {
-      id: @proposal.to_param,
-      description: @proposal.description,
-      proposer: @proposal.user.name,
-      user_emails: @proposal.users.map(&:email).sort,
-      status: status,
-      has_decision: !@proposal.adopted.nil?,
-      replies: replies
-    }
-  end
-
-  def replies
-    @proposal.replies.map do |reply|
-      {}.tap do |hash|
-        hash[:user_email] = reply.user.email
-
-        hash[:value] = case reply.value
-          when true then 'no objection'
-          when false then 'objection'
-          else 'no reply'
-        end
-      end
-    end
-  end
-
   def adopt
     @proposal.update! adopted: true
     deliver_status_update
@@ -78,22 +32,24 @@ class ProposalFlow
     deliver_status_update
   end
 
+  def proposal
+    ProposalPresenter.new(@proposal)
+  end
+
+  def proposals
+    ProposalPresenter.map(Proposal.newest_first)
+  end
+
+  def possible_stakeholders
+    User.where.not(id: @proposer.id)
+  end
+
   private
 
   def deliver_status_update
     ProposingMailer.
-      status_update(proposal.slice(:user_emails, :description, :status)).
+      status_update(user_emails: proposal.user_emails, description: proposal.description, status: proposal.status).
       deliver
-  end
-
-  def initialize(proposal)
-    @proposal = proposal
-  end
-
-  def self.parse_emails(*email_strings)
-    email_strings.each_with_object([]) do |email_string, emails|
-      emails.concat email_string.strip.split /[\s,]+/
-    end
   end
 end
 
