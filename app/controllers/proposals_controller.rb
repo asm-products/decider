@@ -6,18 +6,15 @@ class ProposalsController < ApplicationController
     permitted_params = params[:proposal].permit(
       :proposer_email,
       :description,
-      :stakeholder_emails
+      :user_ids => []
     ).symbolize_keys
 
     proposer_id = User.find_by(email: permitted_params[:proposer_email]).id
 
-    stakeholder_emails = permitted_params[:stakeholder_emails].strip.split /[\s,]+/
-    stakeholder_ids = User.where(email: stakeholder_emails).pluck(:id)
-
     ProposalFlow.for_new_proposal(
       description: permitted_params[:description],
       proposer_id: proposer_id,
-      stakeholder_ids: stakeholder_ids
+      stakeholder_ids: permitted_params[:user_ids]
     )
 
     redirect_to root_path

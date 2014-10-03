@@ -11,10 +11,12 @@ describe ProposalFlow do
     let(:emails) { ActionMailer::Base.deliveries }
 
     before do
+      ids = [martin, rowling, gaiman].map(&:id).map(&:to_s)
+      ids << ""
       ProposalFlow.for_new_proposal(
         description: 'new elf world',
         proposer_id: tolkein,
-        stakeholder_ids: [martin, rowling, gaiman].map(&:id)
+        stakeholder_ids: ids
       )
     end
 

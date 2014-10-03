@@ -14,7 +14,9 @@ RSpec.describe 'proposing', type: :feature do
     fill_in 'proposal[proposer]', with: 'Paul Proposer'
     fill_in 'proposal[proposer_email]', with: 'paul@example.com'
     fill_in 'proposal[description]', with: description
-    fill_in 'proposal[stakeholder_emails]', with: 'alice@example.com billy@example.com cindy@example.com'
+    check "alice"
+    check "billy"
+    check "cindy"
     click_button 'Create Proposal'
   end
 
@@ -33,7 +35,7 @@ RSpec.describe 'proposing', type: :feature do
   before do
     create :user, email: 'paul@example.com', name: 'Paul Proposer'
     %w[alice@example.com billy@example.com cindy@example.com].each do |email|
-      create :user, email: email
+      create :user, email: email, name: email.split('@').first
     end
   end
 

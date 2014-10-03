@@ -1,6 +1,6 @@
 class Views::Proposals::New < Views::Base
   def content
-    form_for(:proposal, url: proposals_path, method: :post) do
+    form_for(:proposal, url: proposals_path, method: :post) do |f|
       p do
         label('My Name', for: 'proposer')
         input(type: :text, id: 'proposer', name: 'proposal[proposer]')
@@ -21,12 +21,7 @@ class Views::Proposals::New < Views::Base
 
       h2 { label('Stakeholders', for: 'stakeholder_emails') }
 
-      p 'Email addresses separated by spaces'
-
-      p do
-        textarea(id: 'stakeholder_emails', name: 'proposal[stakeholder_emails]')
-      end
-
+      f.collection_check_boxes(:user_ids, User.all, :id, :name)
       input(type: :submit, value: 'Create Proposal')
     end
   end

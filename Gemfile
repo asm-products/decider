@@ -12,6 +12,7 @@ gem 'fortitude'
 gem 'foundation-rails'
 gem 'jquery-rails'
 gem 'launchy', group: [:development, :test]
+gem 'meta_request', group: [:development]
 gem 'pivotal_git_scripts', group: :development
 gem 'pg'
 gem 'postmark-rails'
