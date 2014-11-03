@@ -1,12 +1,12 @@
 class ProposalFlow
-  def initialize(proposer:, proposal_id: nil)
-    @proposer = proposer
+  def initialize(user:, proposal_id: nil)
+    @user = user
     @proposal = Proposal.find_by(id: proposal_id)
   end
 
   def create_proposal(description:, stakeholder_ids:)
-    @proposal = Proposal.create!(description: description, user: @proposer)
-    add_stakeholder(@proposer)
+    @proposal = Proposal.create!(description: description, user: @user)
+    add_stakeholder(@user)
     User.where(id: stakeholder_ids).each { |stakeholder| add_stakeholder(stakeholder) }
   end
 
@@ -41,7 +41,7 @@ class ProposalFlow
   end
 
   def possible_stakeholders
-    User.where.not(id: @proposer.id)
+    User.where.not(id: @user.id)
   end
 
   private
