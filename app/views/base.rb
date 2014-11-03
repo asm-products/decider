@@ -1,8 +1,15 @@
 class Views::Base < Fortitude::Widget
   doctype :html5
 
-  def row
-    div class: :row do
+  def row(div_options={})
+    div_class = ([:row] << div_options[:class]).compact
+    div class: div_class  do
+      yield
+    end
+  end
+
+  def columns(small=12)
+    div class: "small-#{small} columns" do
       yield
     end
   end

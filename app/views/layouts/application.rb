@@ -18,6 +18,12 @@ class Views::Layouts::Application < Views::Base
         render template: 'shared/nav'
         render template: 'shared/flash'
 
+        row do
+          columns do
+            rawtext '&nbsp;'
+          end
+        end
+
         yield
       end
 

@@ -2,16 +2,29 @@ class Views::Proposals::Index < Views::Base
   needs :proposals
 
   def content
-    p(link_to 'New Proposal', new_proposal_path)
+    row do
+      columns do
+        link_to 'New Proposal', new_proposal_path, class: 'button'
+      end
+    end
 
-    h2 'Proposals'
+    row do
+      columns do
+        h2 'Proposals'
+      end
+    end
 
     div(class: :proposals) do
       proposals.each do |proposal|
-        p do
-          text "#{proposal.proposer} proposed "
-          text link_to(proposal.description, proposal_path(id: proposal.id))
-          text " - #{proposal.status}"
+        row(class: :proposal) do
+          columns(1) do
+            span proposal.status, class: :label
+          end
+
+          columns(11) do
+            text "#{proposal.proposer} proposed "
+            link_to(proposal.description, proposal_path(id: proposal.id))
+          end
         end
       end
     end

@@ -35,6 +35,10 @@ RSpec.describe 'proposing', type: :feature do
     reply_link(recipient, false)
   end
 
+  def proposal_status(proposal_text)
+    page.find('.proposal', text: proposal_text).find('.label').text
+  end
+
   before do
     create :user, email: 'paul@example.com', name: 'Paul Proposer'
     %w[alice@example.com billy@example.com cindy@example.com].each do |email|
@@ -74,7 +78,7 @@ RSpec.describe 'proposing', type: :feature do
 
     click_link 'Proposals'
     expect(current_path).to eq(proposals_path)
-    expect(page).to have_content('perfect proposal - Adopted')
+    expect(proposal_status('perfect proposal')).to eq 'Adopted'
   end
 
   specify 'rejected proposal flow' do
@@ -100,7 +104,7 @@ RSpec.describe 'proposing', type: :feature do
 
     click_link 'Proposals'
     expect(current_path).to eq(proposals_path)
-    expect(page).to have_content('putrid proposal - Rejected')
+    expect(proposal_status('putrid proposal')).to eq 'Rejected'
 
     alice_email = email_for('alice')
     expect(alice_email.subject).to eq('Proposal Rejected: putrid proposal')
