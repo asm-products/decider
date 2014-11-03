@@ -37,7 +37,7 @@ class ProposalFlow
   end
 
   def proposals
-    ::ProposalPresenter.map(Proposal.newest_first)
+    ::ProposalPresenter.map(@user.replies.order('created_at desc').map(&:proposal))
   end
 
   def possible_stakeholders

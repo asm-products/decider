@@ -15,7 +15,11 @@ class Proposal < ActiveRecord::Base
   has_many :users, through: :replies
   belongs_to :user
 
-  def self.newest_first
-    order('created_at desc')
+  def log
+    {
+      description: description,
+      proposer: user.name,
+      replies: replies.map { |reply| { user: reply.user.name, value: reply.value } }
+    }
   end
 end

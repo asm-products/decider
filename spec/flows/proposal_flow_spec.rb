@@ -68,8 +68,11 @@ describe ProposalFlow do
   end
 
   describe 'status change' do
-    let(:proposal) { create :proposal_with_users }
-    let(:flow) { ProposalFlow.new(user: tolkein, proposal_id: proposal.id) }
+    let!(:flow) do
+      ProposalFlow.new(user: tolkein).tap do |flow|
+        flow.create_proposal(description: 'some proposal', stakeholder_ids: [martin.id, rowling.id])
+      end
+    end
 
     before do
       allow(ProposingMailer).to receive(:status_update).and_call_original
@@ -83,8 +86,8 @@ describe ProposalFlow do
 
       specify do
         expect(ProposingMailer).to have_received(:status_update).with(
-            user_emails: proposal.users.map(&:email).sort,
-            description: proposal.description,
+            user_emails: %w[grr.martin@example.com jk.rowling@example.com jrr.tolkein@example.com],
+            description: 'some proposal',
             status: 'Adopted'
           )
       end
@@ -96,8 +99,8 @@ describe ProposalFlow do
 
       specify do
         expect(ProposingMailer).to have_received(:status_update).with(
-            user_emails: proposal.users.map(&:email).sort,
-            description: proposal.description,
+            user_emails: %w[grr.martin@example.com jk.rowling@example.com jrr.tolkein@example.com],
+            description: 'some proposal',
             status: 'Rejected'
           )
       end
@@ -105,14 +108,19 @@ describe ProposalFlow do
   end
 
   describe '#proposals' do
-    let(:user) { create :user }
+    let(:user) { create :user, name: 'user' }
+    let(:other_user) { create :user, name: 'other_user' }
 
     before do
-      create :proposal, description: 'p1'
-      create :proposal, description: 'p2'
+      ProposalFlow.new(user: user).create_proposal(description: 'user_is_proposer', stakeholder_ids: [])
+      ProposalFlow.new(user: other_user).create_proposal(description: 'user_is_stakeholder', stakeholder_ids: [user.id])
+      ProposalFlow.new(user: other_user).create_proposal(description: 'user_is_not_involved', stakeholder_ids: [])
     end
 
     let(:proposals) { ProposalFlow.new(user: user).proposals }
-    specify { expect(proposals.map { |p| p.description }).to match_array %w[p1 p2] }
+
+    it 'only returns proposals for which the user is a stakeholder' do
+      expect(proposals.map(&:description)).to match_array %w[user_is_proposer user_is_stakeholder]
+    end
   end
 end

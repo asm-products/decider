@@ -3,12 +3,8 @@ class Mom
     Reply.new proposal: proposal, user: user
   end
 
-  def proposal(description: 'wear beige', proposer: create(:user, name: 'Paul Proposer'), stakeholders: [])
-    Proposal.new description: description, user: proposer, users: stakeholders
-  end
-
-  def proposal_with_users
-    proposal(stakeholders: [user, user])
+  def proposal(description: 'wear beige', proposer: create(:user, name: 'Paul Proposer'))
+    Proposal.new(description: description, user: proposer)
   end
 
   def user(email: "user#{random}@example.com", name: 'name', password: 'password')
