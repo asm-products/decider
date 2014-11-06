@@ -1,4 +1,4 @@
-class ReplyFlow
+class Replying
   def initialize(user:, reply_id:)
     @user = user
     @reply = user.replies.find(reply_id)

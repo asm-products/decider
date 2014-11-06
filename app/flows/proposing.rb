@@ -1,4 +1,4 @@
-class ProposalFlow
+class Proposing
   def initialize(user:, proposal_id: nil)
     @user = user
     @proposal = Proposal.find_by(id: proposal_id)

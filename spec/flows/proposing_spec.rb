@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe ProposalFlow do
+describe Proposing do
   let(:tolkein) { create :user, email: 'jrr.tolkein@example.com', name: 'J.R.R. Tolkein' }
   let(:martin) { create :user, email: 'grr.martin@example.com' }
   let(:rowling) { create :user, email: 'jk.rowling@example.com' }
@@ -14,7 +14,7 @@ describe ProposalFlow do
       ids = [martin, rowling, gaiman].map(&:id).map(&:to_s)
       ids << ""
 
-      ProposalFlow.
+      Proposing.
         new(user: tolkein).
         create_proposal(
           description: 'new elf world',
@@ -46,11 +46,11 @@ describe ProposalFlow do
   describe 'proposal' do
     let(:proposal) { create :proposal, description: 'new elf world' }
 
-    specify { expect(ProposalFlow.new(user: tolkein, proposal_id: proposal.id).proposal.description).to eq 'new elf world' }
+    specify { expect(Proposing.new(user: tolkein, proposal_id: proposal.id).proposal.description).to eq 'new elf world' }
   end
 
   describe '#add_user' do
-    let(:flow) { ProposalFlow.new(user: tolkein, proposal_id: proposal.id) }
+    let(:flow) { Proposing.new(user: tolkein, proposal_id: proposal.id) }
     let(:proposal) { Proposal.create! description: 'new elf world', user: tolkein }
 
     specify do
@@ -69,7 +69,7 @@ describe ProposalFlow do
 
   describe 'status change' do
     let!(:flow) do
-      ProposalFlow.new(user: tolkein).tap do |flow|
+      Proposing.new(user: tolkein).tap do |flow|
         flow.create_proposal(description: 'some proposal', stakeholder_ids: [martin.id, rowling.id])
       end
     end
@@ -112,12 +112,12 @@ describe ProposalFlow do
     let(:other_user) { create :user, name: 'other_user' }
 
     before do
-      ProposalFlow.new(user: user).create_proposal(description: 'user_is_proposer', stakeholder_ids: [])
-      ProposalFlow.new(user: other_user).create_proposal(description: 'user_is_stakeholder', stakeholder_ids: [user.id])
-      ProposalFlow.new(user: other_user).create_proposal(description: 'user_is_not_involved', stakeholder_ids: [])
+      Proposing.new(user: user).create_proposal(description: 'user_is_proposer', stakeholder_ids: [])
+      Proposing.new(user: other_user).create_proposal(description: 'user_is_stakeholder', stakeholder_ids: [user.id])
+      Proposing.new(user: other_user).create_proposal(description: 'user_is_not_involved', stakeholder_ids: [])
     end
 
-    let(:proposals) { ProposalFlow.new(user: user).proposals }
+    let(:proposals) { Proposing.new(user: user).proposals }
 
     it 'only returns proposals for which the user is a stakeholder' do
       expect(proposals.map(&:description)).to match_array %w[user_is_proposer user_is_stakeholder]
