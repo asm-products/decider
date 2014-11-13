@@ -43,30 +43,6 @@ describe Proposing do
     end
   end
 
-  describe 'proposal' do
-    let(:proposal) { create :proposal, description: 'new elf world' }
-
-    specify { expect(Proposing.new(user: tolkein, proposal_id: proposal.id).proposal.description).to eq 'new elf world' }
-  end
-
-  describe '#add_user' do
-    let(:flow) { Proposing.new(user: tolkein, proposal_id: proposal.id) }
-    let(:proposal) { Proposal.create! description: 'new elf world', user: tolkein }
-
-    specify do
-      allow(ProposingMailer).to receive(:propose).and_call_original
-
-      flow.add_stakeholder(martin)
-      expect(ProposingMailer).to have_received(:propose).with(
-        recipient: martin.email,
-        subject: 'New proposal from J.R.R. Tolkein',
-        proposer: 'J.R.R. Tolkein',
-        proposal: 'new elf world',
-        reply_id: Reply.last.id
-      )
-    end
-  end
-
   describe 'status change' do
     let!(:flow) do
       Proposing.new(user: tolkein).tap do |flow|
@@ -78,11 +54,11 @@ describe Proposing do
       allow(ProposingMailer).to receive(:status_update).and_call_original
     end
 
-    specify { expect(flow.proposal.status).to eq('Pending') }
+    specify { expect(flow.proposal.adopted?).to eq(false) }
 
     describe '#adopt' do
       before { flow.adopt }
-      specify { expect(flow.proposal.status).to eq('Adopted') }
+      specify { expect(flow.proposal.adopted?).to eq(true) }
 
       specify do
         expect(ProposingMailer).to have_received(:status_update).with(
@@ -95,7 +71,7 @@ describe Proposing do
 
     describe "#reject" do
       before { flow.reject }
-      specify { expect(flow.proposal.status).to eq('Rejected') }
+      specify { expect(flow.proposal.adopted?).to eq(false) }
 
       specify do
         expect(ProposingMailer).to have_received(:status_update).with(
@@ -104,23 +80,6 @@ describe Proposing do
             status: 'Rejected'
           )
       end
-    end
-  end
-
-  describe '#proposals' do
-    let(:user) { create :user, name: 'user' }
-    let(:other_user) { create :user, name: 'other_user' }
-
-    before do
-      Proposing.new(user: user).create_proposal(description: 'user_is_proposer', stakeholder_ids: [])
-      Proposing.new(user: other_user).create_proposal(description: 'user_is_stakeholder', stakeholder_ids: [user.id])
-      Proposing.new(user: other_user).create_proposal(description: 'user_is_not_involved', stakeholder_ids: [])
-    end
-
-    let(:proposals) { Proposing.new(user: user).proposals }
-
-    it 'only returns proposals for which the user is a stakeholder' do
-      expect(proposals.map(&:description)).to match_array %w[user_is_proposer user_is_stakeholder]
     end
   end
 end

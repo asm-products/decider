@@ -18,11 +18,11 @@ class ProposalsController < ApplicationController
   end
 
   def index
-    @proposals = Proposing.new(user: current_user).proposals
+    @proposals = ProposalViewing.new(current_user).proposals
   end
 
   def show
-    @proposal = Proposing.new(user: current_user, proposal_id: params[:id]).proposal
+    @proposal = ProposalViewing.new(current_user).proposal(params[:id])
     @adopt_proposal_path = proposal_path(params[:id], adopted: true)
     @reject_proposal_path = proposal_path(params[:id], adopted: false)
   end
