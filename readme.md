@@ -32,3 +32,8 @@ You should be able to run tests as you normally do, plus you can run the server 
 These are experiemntal. The jury is still out. The idea is that they encapsulate everything needed to support a
 single workflow, such as proposing. Most of the logic that would otherwise be in a controller or model lives in
 the flows.
+
+## Heroku
+
+  * git remote: `git@heroku.citizencode:cc-decisions.git`
+  * site: `http://cc-decisions.herokuapp.com/`
