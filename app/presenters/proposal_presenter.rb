@@ -38,4 +38,8 @@ class ProposalPresenter
   def replies
     ReplyPresenter.map(@proposal.replies)
   end
+
+  def proposed_at
+    @proposal.created_at
+  end
 end

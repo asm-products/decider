@@ -51,7 +51,7 @@ RSpec.describe 'proposing', type: :feature do
     create_proposal 'perfect proposal'
 
     expect(current_path).to eq proposals_path
-    expect(page).to have_content('Paul Proposer proposed perfect proposal')
+    expect(page).to have_content(/perfect proposal\s*Pending\s*Proposed by Paul Proposer/)
 
     expect(ActionMailer::Base.deliveries.count).to eq 4
     expect(ActionMailer::Base.deliveries.map(&:subject).uniq).to eq ['New proposal from Paul Proposer']
@@ -91,7 +91,7 @@ RSpec.describe 'proposing', type: :feature do
     sign_in_through_route 'paul@example.com'
 
     create_proposal 'putrid proposal'
-    expect(page).to have_content('Paul Proposer proposed putrid proposal')
+    expect(page).to have_content(/putrid proposal\s*Pending\s*Proposed by Paul Proposer/)
 
     logout
     visit objection_link('alice')

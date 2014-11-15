@@ -14,6 +14,14 @@ class Views::Base < Fortitude::Widget
     end
   end
 
+  def full_row(div_options={})
+    row(div_options) do
+      columns do
+        yield
+      end
+    end
+  end
+
   def field(f, field, label_text: nil)
     has_errors = f.object.errors[field].any?
     wrapper_classes = [field.to_s]
