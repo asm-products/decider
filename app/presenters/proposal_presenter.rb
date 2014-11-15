@@ -42,4 +42,8 @@ class ProposalPresenter
   def proposed_at
     @proposal.created_at
   end
+
+  def to_partial_path
+    'proposals/proposal'
+  end
 end
