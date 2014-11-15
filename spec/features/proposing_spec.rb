@@ -70,6 +70,12 @@ RSpec.describe 'proposing', type: :feature do
     expect(page).to have_selector('tr', text: /alice@example.com\s*no objection/)
     expect(page).to have_selector('tr', text: /billy@example.com\s*objection/)
     expect(page).to have_selector('tr', text: /cindy@example.com\s*no reply/)
+    expect(page).to_not have_button('Adopt this proposal')
+
+    proposal_path = current_path
+    logout
+    sign_in_through_route 'paul@example.com'
+    visit proposal_path
 
     click_button 'Adopt this proposal'
     expect(page).to have_content('Proposal Adopted')
@@ -96,6 +102,11 @@ RSpec.describe 'proposing', type: :feature do
     sign_in_through_route('billy@example.com')
 
     ActionMailer::Base.deliveries.clear
+
+    proposal_path = current_path
+    logout
+    sign_in_through_route 'paul@example.com'
+    visit proposal_path
 
     click_button 'Reject this proposal'
     expect(page).to have_content('Proposal Rejected')

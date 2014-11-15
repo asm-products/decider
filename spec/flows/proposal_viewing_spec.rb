@@ -19,4 +19,10 @@ describe ProposalViewing do
       expect(ProposalViewing.new(user).proposals.map(&:description)).to match_array %w[user_is_proposer user_is_stakeholder]
     end
   end
+
+  describe '#can_edit?' do
+    specify { expect(ProposalViewing.new(user).can_edit?(user_is_proposer.id)).to eq true }
+    specify { expect(ProposalViewing.new(user).can_edit?(user_is_stakeholder.id)).to eq false }
+    specify { expect(ProposalViewing.new(user).can_edit?(user_is_not_involved.id)).to eq false }
+  end
 end

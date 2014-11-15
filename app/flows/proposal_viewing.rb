@@ -3,6 +3,10 @@ class ProposalViewing
     @user = user
   end
 
+  def can_edit?(proposal_id)
+    Proposal.where(id: proposal_id, user_id: @user.id).exists?
+  end
+
   def proposal(id)
     ProposalPresenter.new(@user.proposals.find(id))
   end

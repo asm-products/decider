@@ -2,6 +2,7 @@ class Views::Proposals::Show < Views::Base
   needs :adopt_proposal_path
   needs :reject_proposal_path
   needs :proposal
+  needs :show_actions
 
   def content
     link_to 'Proposals', root_path
@@ -30,7 +31,7 @@ class Views::Proposals::Show < Views::Base
 
     if proposal.has_decision?
       p "Proposal #{proposal.status}"
-    else
+    elsif show_actions
       div button_to('Adopt this proposal', adopt_proposal_path, method: :patch)
       div button_to('Reject this proposal', reject_proposal_path, method: :patch)
     end

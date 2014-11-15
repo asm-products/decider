@@ -3,7 +3,7 @@ class Proposing
 
   def initialize(user:, proposal_id: nil)
     @user = user
-    @proposal = Proposal.find_by(id: proposal_id)
+    @proposal = Proposal.find_by!(id: proposal_id, user_id: @user.id) if proposal_id
   end
 
   def create_proposal(description:, stakeholder_ids:)

@@ -22,7 +22,9 @@ class ProposalsController < ApplicationController
   end
 
   def show
-    @proposal = ProposalViewing.new(current_user).proposal(params[:id])
+    viewing = ProposalViewing.new(current_user)
+    @proposal = viewing.proposal(params[:id])
+    @show_actions = viewing.can_edit?(params[:id])
     @adopt_proposal_path = proposal_path(params[:id], adopted: true)
     @reject_proposal_path = proposal_path(params[:id], adopted: false)
   end

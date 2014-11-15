@@ -6,6 +6,23 @@ describe Proposing do
   let(:rowling) { create :user, email: 'jk.rowling@example.com' }
   let(:gaiman) { create :user, email: 'n.gaiman@example.com' }
 
+  describe '#new' do
+    it 'allows a blank proposal ID' do
+      expect { Proposing.new(user: tolkein) }.to_not raise_exception
+    end
+
+    it 'allows the ID of a proposal owned by the user' do
+      proposal = create :proposal, proposer: tolkein
+      flow = Proposing.new(user: tolkein, proposal_id: proposal.id)
+      expect(flow.proposal).to eq proposal
+    end
+
+    it 'does not allow the ID of a proposal owned by someone else' do
+      proposal = create :proposal, proposer: martin
+      expect { Proposing.new(user: tolkein, proposal_id: proposal.id) }.to raise_exception ActiveRecord::RecordNotFound
+    end
+  end
+
   describe '#create_proposal' do
     let(:last_proposal) { Proposal.last }
     let(:emails) { ActionMailer::Base.deliveries }

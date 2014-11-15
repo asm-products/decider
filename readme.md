@@ -26,3 +26,9 @@ To get Vagrant set up in RubyMine, make sure you get RubyMine 7 (the EAP version
   * Use "/home/vagrant/.rbenv/versions/2.1.2/bin/ruby" for the Ruby interpreter path
 
 You should be able to run tests as you normally do, plus you can run the server from the run configurations.
+
+## What The Heck Are These Flows?
+
+These are experiemntal. The jury is still out. The idea is that they encapsulate everything needed to support a
+single workflow, such as proposing. Most of the logic that would otherwise be in a controller or model lives in
+the flows.
