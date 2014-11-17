@@ -7,6 +7,12 @@ class Views::Shared::Nav < Views::Base
             link_to 'Decisions', root_path
           end
         end
+
+        li class: "toggle-topbar menu-icon" do
+          link_to '#' do
+            span 'Menu'
+          end
+        end
       end
 
       section class: 'top-bar-section' do

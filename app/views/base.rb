@@ -24,7 +24,7 @@ class Views::Base < Fortitude::Widget
 
   def field(f, field, label_text: nil)
     has_errors = f.object.errors[field].any?
-    wrapper_classes = [field.to_s]
+    wrapper_classes = ['small-12', 'columns', field.to_s]
     wrapper_classes << 'error' if has_errors
 
     row do
