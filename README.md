@@ -1,13 +1,39 @@
-# Decider
+# Decisions
 
-<a href="https://assembly.com/decider/bounties?utm_campaign=assemblage&utm_source=decider&utm_medium=repo_badge"><img src="https://asm-badger.herokuapp.com/decider/badges/tasks.svg" height="24px" alt="Open Tasks" /></a>
+## Vagrant
 
-## Helps teams decide fast and remember
+Experimenting with using Vagrant. To get started:
 
-This is a product being built by the Assembly community. You can help push this idea forward by visiting [https://assembly.com/decider](https://assembly.com/decider).
+  * download Vagrant: http://www.vagrantup.com/downloads.html
+  * in this project's root directory, type `vagrant up` (can take 10 minutes when run the first time)
 
-### How Assembly Works
+Notes:
+  * to ssh to the Vagrant box, type `vagrant ssh`
+  * the Vagrant box's IP address is 10.0.50.50
+  * Vagrant is configured to forward port 3000 on the host machine (your Mac) to port 3000 on the guest machine (Vagrant)
+  * the Vagrant box is configured with the `/vagrant.sh` and `/vagrant_privileged.sh` scripts in this repo
 
-Assembly products are like open-source and made with contributions from the community. Assembly handles the boring stuff like hosting, support, financing, legal, etc. Once the product launches we collect the revenue and split the profits amongst the contributors.
+Limitations:
+  * you current cannot connect directly to the database running on the Vagrant box
 
-Visit [https://assembly.com](https://assembly.com) to learn more.
+## Vagrant + RubyMine
+
+To get Vagrant set up in RubyMine, make sure you get RubyMine 7 (the EAP version). Then:
+
+  * Go to Settings > Languages and Frameworks > Ruby SDK and Gems
+  * Click the "+" button and add a new remote SDK
+  * Choose "Vagrant"
+  * Use "/home/vagrant/.rbenv/versions/2.1.2/bin/ruby" for the Ruby interpreter path
+
+You should be able to run tests as you normally do, plus you can run the server from the run configurations.
+
+## What The Heck Are These Flows?
+
+These are experiemntal. The jury is still out. The idea is that they encapsulate everything needed to support a
+single workflow, such as proposing. Most of the logic that would otherwise be in a controller or model lives in
+the flows.
+
+## Heroku
+
+  * git remote: `git@heroku.citizencode:cc-decisions.git`
+  * site: `http://cc-decisions.herokuapp.com/`
